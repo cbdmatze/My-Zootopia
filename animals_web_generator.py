@@ -5,35 +5,38 @@ with open('animals_data.json', 'r') as f:
     animals = json.load(f)
 
 # Generate a string with the animals' data
-output = "" # Initialize an empty string
+output = ""  # Initialize an empty string
 
-
-# Iterate through each animal and print the specified fields
+# Iterate through each animal and construct the specified fields
 for animal in animals:
-    output += '<li class="cards__item">' # Start list item for HTML 
+    output += '<li class="cards__item">'  # Start list item for HTML
 
-    output += f"Name: {animal.get('name', 'N/A')}<br/>\n" # Use break for line breaks
-
-
-    # Get the diet from the characteristics
-    diet = animal.get('characteristics', {}).get('diet')
-    if diet:
-        output += f"Diet: {diet}<br/>\n" # Use break for line breaks
-
-
+    # Wrap the animal name in a div with the class card__title
+    output += f'  <div class="card__title">{animal.get("name", "N/A")}</div>\n'
+    
+    # Start the paragraph for other details
+    output += '  <p class="card__text">\n'
+    
     # Get the first location from the locations list
     locations = animal.get('locations', [])
     if locations:
-        output += f"Location: {locations[0]}<br/>\n" # Use break for line breaks
+        output += f'      <strong>Location:</strong> {", ".join(locations)}<br/>\n'  # Join multiple locations if necessary
     
-
     # Get the type from the characteristics
     animal_type = animal.get('characteristics', {}).get('type')
     if animal_type:
-        output += f"Type: {animal_type}<br/>\n" # Use break for line breaks
+        output += f'      <strong>Type:</strong> {animal_type}<br/>\n'  # Use <br/> for line breaks
     
-    output += '</li>' # End list item for HTML
-    output += "\n" # Add a newline for separation between animals
+    # Get the diet from the characteristics
+    diet = animal.get('characteristics', {}).get('diet')
+    if diet:
+        output += f'      <strong>Diet:</strong> {diet}<br/>\n'  # Use <br/> for line breaks
+    
+    # Close the paragraph tag
+    output += '  </p>\n'
+    
+    output += '</li>'  # End list item for HTML
+    output += "\n"  # Add a newline for separation between animals (optional)
 
 # Read the content of the HTML template
 with open('animals_template.html', 'r') as template_file:
