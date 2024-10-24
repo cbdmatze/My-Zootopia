@@ -10,28 +10,30 @@ output = "" # Initialize an empty string
 
 # Iterate through each animal and print the specified fields
 for animal in animals:
-    output += f"Name: {animal.get('name', 'N/A')}\n"
+    output += '<li class="cards__item">' # Start list item for HTML 
+
+    output += f"Name: {animal.get('name', 'N/A')}<br/>\n" # Use break for line breaks
 
 
     # Get the diet from the characteristics
     diet = animal.get('characteristics', {}).get('diet')
     if diet:
-        output += f"Diet: {diet}\n"
+        output += f"Diet: {diet}<br/>\n" # Use break for line breaks
 
 
     # Get the first location from the locations list
     locations = animal.get('locations', [])
     if locations:
-        output += f"Location: {locations[0]}\n"
+        output += f"Location: {locations[0]}<br/>\n" # Use break for line breaks
     
 
     # Get the type from the characteristics
     animal_type = animal.get('characteristics', {}).get('type')
     if animal_type:
-        output += f"Type: {animal_type}\n"
+        output += f"Type: {animal_type}<br/>\n" # Use break for line breaks
     
-    # Add a newline for separation between animals
-    output += "\n"
+    output += '</li>' # End list item for HTML
+    output += "\n" # Add a newline for separation between animals
 
 # Read the content of the HTML template
 with open('animals_template.html', 'r') as template_file:
