@@ -1,9 +1,16 @@
 import json
 
+def get_skin_types(animals):
+    """Extracts unique skin_type values from the animals list."""
+    skin_types = set()
+    for animal in animals:
+        skin_type = animal.get('characteristics', {}).get('skin_type', 'Unknown')
+        skin_types.add(skin_type)
+    return list(skin_types)
+
 def serialize_animal(animal_obj):
     """Serialize a single animal object to HTML format."""
-    output = ''
-    output += '<li class="cards__item">\n'
+    output = '<li class="cards__item">\n'
     output += f'  <div class="card__title">{animal_obj.get("name", "N/A")}</div>\n'
     output += '  <p class="card__text">\n'
     output += '    <ul class="animal-details">\n'
@@ -30,23 +37,37 @@ def serialize_animal(animal_obj):
     return output
 
 def main():
-    """Main function to load animal data and generate HTML output."""
+    """Main function to load animal data, get skin_type, and generate HTML output."""
     # Load the data from the JSON file
     with open('animals_data.json', 'r') as f:
         animals = json.load(f)
 
-    # Generate a string with the animals' data
-    output = ""  # Initialize an empty string
+    # Get available skin types
+    skin_types = get_skin_types(animals)
+    print("Available skin types:")
+    for i, skin_type in enumerate(skin_types, 1):
+        print(f"{i}. {skin_type}")
 
-    # Iterate through each animal and serialize it
-    for animal_obj in animals:
+    # Get user selection
+    selected_index = int(input("Enter the number corresponding to the desired skin type: ")) - 1
+    selected_skin_type = skin_types[selected_index]
+
+    # Filter animals by selected skin type
+    filtered_animals = [
+        animal for animal in animals
+        if animal.get('characteristics', {}).get('skin_type', 'Unknown') == selected_skin_type
+    ]
+
+    # Generate HTML content for filtered animals
+    output = ""
+    for animal_obj in filtered_animals:
         output += serialize_animal(animal_obj)
 
     # Read the content of the HTML template
     with open('animals_template.html', 'r') as template_file:
         template_content = template_file.read()
 
-    # Replace the placeholder with the animals' data
+    # Replace the placeholder with the filtered animals' data
     final_content = template_content.replace('__REPLACE_ANIMALS_INFO__', output)
 
     # Write the new HTML content to a new file
