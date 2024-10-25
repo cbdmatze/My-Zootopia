@@ -57,12 +57,13 @@ def serialize_animal(animal_obj):
         return output
 
 
-def generate_html(animal_data):
+def generate_html(animal_data, animal_name):
     """
     Generates an HTML file with the provided animal data, ebedding it in a predefined template.
     
     Args:
         animal_data (list): List of dictionaries, each containing details about an animal.
+        animal_name (str): The name of the animal searched for, used in error message if no data is found.
     """
 
     # Read the HTML template
@@ -70,7 +71,11 @@ def generate_html(animal_data):
         template_content = template_file.read()
 
     # Generate serialized output for each animal
-    output = ''.join(serialize_animal(animal) for animal in animal_data)
+    if animal_data:
+        output = ''.join(serialize_animal(animal) for animal in animal_data)
+    else:
+        # Display a frinedly error message if no animals are found
+        output = f'<h2 style="color: red; text-align: center;">The animal "{animal_name}" unfortunately was not found...Please ensure your spelling was correct 😎'
 
     # Replace the placeholder in the template with the serialized animal data
     final_content = template_content.replace('__REPLACE_ANIMALS_INFO__', output)
@@ -92,11 +97,9 @@ def main():
     # Fetch data from the API
     animal_data = fetch_animal_data(animal_name)
 
-    # Check if data was successfully retrieved before generating HTML
-    if animal_data:
-        generate_html(animal_data)
-    else:
-        print("No data available to generate HTML.")
+    # Generate HTML with the specified animal name
+    animal_data = generate_html(animal_data, animal_name)
+    
 
 
 if __name__ == "__main__":
