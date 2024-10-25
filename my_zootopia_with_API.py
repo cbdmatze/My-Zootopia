@@ -1,17 +1,22 @@
 import requests
+import urllib.parse # New import to handle URL encoding
 
 API_KEY = '7jwjjEP5ZPpj6pCCP7uYSQ==pDdefjc6dsHR98Ub'
-API_URL = 'https://api.api-ninjas.com/v1/animals?name=fox'
+API_URL = 'https://api.api-ninjas.com/v1/animals?name='
 
-def fetch_animal_data():
+def fetch_animal_data(animal_name):
     """
     Fetches animal data from the API based on the search term (currently 'Fox').
+
+    Args: animal_name (str): The name of the animal to search for.
     
     Returns:
         list: A list of dictionaries containing animal data. Returns an empty list if the API request fails.
         """
     headers = {'X-Api-Key': API_KEY}
-    response = requests.get(API_URL, headers=headers)
+    # Properly encode the animal_name to be safe for URLs
+    url = API_URL + urllib.parse.quote(animal_name)
+    response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
         return response.json()
@@ -74,16 +79,18 @@ def generate_html(animal_data):
     with open('animals_API.html', 'w') as output_file:
         output_file.write(final_content)
     
-    print("HTML file generated successfully: animals_API.html")
+    print("Website was successfully generated: animals_API.html")
 
 
 def main():
     """
     Main function to run the animal data fetching, processing, and HTML generation.
     """
+    # Prompt the user to enter an animal name
+    animal_name = input("Enter the name of an animal: ")
 
     # Fetch data from the API
-    animal_data = fetch_animal_data()
+    animal_data = fetch_animal_data(animal_name)
 
     # Check if data was successfully retrieved before generating HTML
     if animal_data:
