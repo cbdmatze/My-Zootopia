@@ -1,7 +1,8 @@
+import os
 import requests
 import urllib.parse # New import to handle URL encoding
 
-API_KEY = '7jwjjEP5ZPpj6pCCP7uYSQ==pDdefjc6dsHR98Ub'
+API_KEY = os.getenv("API_NINJAS_API_KEY")
 API_URL = 'https://api.api-ninjas.com/v1/animals?name='
 
 def fetch_animal_data(animal_name):
