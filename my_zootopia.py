@@ -18,6 +18,7 @@ def load_data(file_path, is_json=True, encoding='utf-8'):
         else:
             return f.read()  # Load plain text data
 
+
 def save_data(file_path, data, is_json=False, encoding='utf-8'):
     """
     Saves data to a file. Can save JSON or text data based on the flag.
@@ -34,6 +35,7 @@ def save_data(file_path, data, is_json=False, encoding='utf-8'):
         else:
             f.write(data)  # Save as plain text
 
+
 def get_skin_types(animals):
     """Extracts unique skin_type values from the animals list."""
     skin_types = set()
@@ -41,6 +43,7 @@ def get_skin_types(animals):
         skin_type = animal.get('characteristics', {}).get('skin_type', 'Unknown')
         skin_types.add(skin_type)
     return list(skin_types)
+
 
 def serialize_animal(animal_obj):
     """Serialize a single animal object to HTML format."""
@@ -70,6 +73,7 @@ def serialize_animal(animal_obj):
     
     return output
 
+
 def get_user_skin_type_choice(skin_types):
     """Prompts the user to select a skin type."""
     print("Available skin types:")
@@ -79,6 +83,7 @@ def get_user_skin_type_choice(skin_types):
     selected_index = int(input("Enter the number corresponding to the desired skin type: ")) - 1
     return skin_types[selected_index]
 
+
 def filter_animals_by_skin_type(animals, selected_skin_type):
     """Filters the animals by the selected skin type."""
     return [
@@ -86,12 +91,14 @@ def filter_animals_by_skin_type(animals, selected_skin_type):
         if animal.get('characteristics', {}).get('skin_type', 'Unknown') == selected_skin_type
     ]
 
+
 def generate_html_content(filtered_animals):
     """Generates HTML content for the filtered animals."""
     output = ""
     for animal_obj in filtered_animals:
         output += serialize_animal(animal_obj)
     return output
+
 
 def main():
     """Main function to orchestrate the animal data loading, filtering, and HTML generation."""
@@ -116,6 +123,7 @@ def main():
 
     # Save the final HTML output
     save_data('animals.html', final_content, is_json=False)
+
 
 if __name__ == "__main__":
     main()
