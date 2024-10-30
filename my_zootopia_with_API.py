@@ -22,6 +22,9 @@ def fetch_animal_data(animal_name):
     headers = {'X-Api-Key': API_KEY}
     url = API_URL + urllib.parse.quote(animal_name)
     response = requests.get(url, headers=headers)
+    
+    # Ensure the response encoding is correct
+    response.encoding = 'utf-8'  # Explicitly set response encoding to UTF-8
 
     if response.status_code == 200:
         return response.json()
@@ -67,7 +70,8 @@ def generate_html(animal_data, animal_name):
         animal_name (str): The name of the animal searched for, used in error message if no data is found.
     """
 
-    with open('animals_template.html', 'r') as template_file:
+    # Use UTF-8 encoding when reading the template
+    with open('animals_template.html', 'r', encoding='utf-8') as template_file:
         template_content = template_file.read()
 
     if animal_data:
@@ -77,7 +81,8 @@ def generate_html(animal_data, animal_name):
 
     final_content = template_content.replace('__REPLACE_ANIMALS_INFO__', output)
 
-    with open('animals_API.html', 'w') as output_file:
+    # Use UTF-8 encoding when writing the HTML output
+    with open('animals_API.html', 'w', encoding='utf-8') as output_file:
         output_file.write(final_content)
     
     print("Website was successfully generated: animals_API.html")
