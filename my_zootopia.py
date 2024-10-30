@@ -1,5 +1,39 @@
 import json
 
+def load_data(file_path, is_json=True, encoding='utf-8'):
+    """
+    Loads data from a file. Can load JSON or text data based on the flag.
+    
+    Args:
+        file_path (str): The path of the file to load.
+        is_json (bool): Flag to indicate whether the file is JSON. Default is True.
+        encoding (str): Encoding format for reading the file. Default is 'utf-8'.
+    
+    Returns:
+        dict/list/str: The loaded data, either as JSON or plain text.
+    """
+    with open(file_path, 'r', encoding=encoding) as f:
+        if is_json:
+            return json.load(f)  # Load JSON data
+        else:
+            return f.read()  # Load plain text data
+
+def save_data(file_path, data, is_json=False, encoding='utf-8'):
+    """
+    Saves data to a file. Can save JSON or text data based on the flag.
+    
+    Args:
+        file_path (str): The path of the file to save to.
+        data (dict/list/str): The data to be saved.
+        is_json (bool): Flag to indicate whether the data should be saved as JSON. Default is False.
+        encoding (str): Encoding format for writing the file. Default is 'utf-8'.
+    """
+    with open(file_path, 'w', encoding=encoding) as f:
+        if is_json:
+            json.dump(data, f, ensure_ascii=False, indent=4)  # Save as JSON
+        else:
+            f.write(data)  # Save as plain text
+
 def get_skin_types(animals):
     """Extracts unique skin_type values from the animals list."""
     skin_types = set()
@@ -36,45 +70,52 @@ def serialize_animal(animal_obj):
     
     return output
 
-def main():
-    """Main function to load animal data, get skin_type, and generate HTML output."""
-    # Load the data from the JSON file
-    with open('animals_data.json', 'r') as f:
-        animals = json.load(f)
-
-    # Get available skin types
-    skin_types = get_skin_types(animals)
+def get_user_skin_type_choice(skin_types):
+    """Prompts the user to select a skin type."""
     print("Available skin types:")
     for i, skin_type in enumerate(skin_types, 1):
         print(f"{i}. {skin_type}")
 
-    # Get user selection
     selected_index = int(input("Enter the number corresponding to the desired skin type: ")) - 1
-    selected_skin_type = skin_types[selected_index]
+    return skin_types[selected_index]
 
-    # Filter animals by selected skin type
-    filtered_animals = [
+def filter_animals_by_skin_type(animals, selected_skin_type):
+    """Filters the animals by the selected skin type."""
+    return [
         animal for animal in animals
         if animal.get('characteristics', {}).get('skin_type', 'Unknown') == selected_skin_type
     ]
 
-    # Generate HTML content for filtered animals
+def generate_html_content(filtered_animals):
+    """Generates HTML content for the filtered animals."""
     output = ""
     for animal_obj in filtered_animals:
         output += serialize_animal(animal_obj)
+    return output
 
-    # Read the content of the HTML template
-    with open('animals_template.html', 'r') as template_file:
-        template_content = template_file.read()
+def main():
+    """Main function to orchestrate the animal data loading, filtering, and HTML generation."""
+    # Load animal data from JSON
+    animals = load_data('animals_data.json')
+
+    # Get available skin types and allow user to select one
+    skin_types = get_skin_types(animals)
+    selected_skin_type = get_user_skin_type_choice(skin_types)
+
+    # Filter animals by the selected skin type
+    filtered_animals = filter_animals_by_skin_type(animals, selected_skin_type)
+
+    # Generate HTML content for the filtered animals
+    html_content = generate_html_content(filtered_animals)
+
+    # Load the HTML template
+    template_content = load_data('animals_template.html', is_json=False)
 
     # Replace the placeholder with the filtered animals' data
-    final_content = template_content.replace('__REPLACE_ANIMALS_INFO__', output)
+    final_content = template_content.replace('__REPLACE_ANIMALS_INFO__', html_content)
 
-    # Write the new HTML content to a new file
-    with open('animals.html', 'w') as output_file:
-        output_file.write(final_content)
-
-    print("HTML file generated successfully: animals.html")
+    # Save the final HTML output
+    save_data('animals.html', final_content, is_json=False)
 
 if __name__ == "__main__":
     main()
