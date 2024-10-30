@@ -32,6 +32,7 @@ def fetch_animal_data(animal_name):
         print("Failed to retrieve data:", response.status_code)
         return []
 
+
 def serialize_animal(animal_obj):
     """
     Serializes a single animal object into an HTML list item format.
@@ -61,6 +62,7 @@ def serialize_animal(animal_obj):
     output += '</ul></p></li>\n'
     return output
 
+
 def generate_html(animal_data, animal_name):
     """
     Generates an HTML file with the provided animal data, embedding it in a predefined template.
@@ -87,6 +89,7 @@ def generate_html(animal_data, animal_name):
     
     print("Website was successfully generated: animals_API.html")
 
+
 def main():
     """
     Main function to run the animal data fetching, processing, and HTML generation.
@@ -94,6 +97,7 @@ def main():
     animal_name = input("Enter the name of an animal: ")
     animal_data = fetch_animal_data(animal_name)
     generate_html(animal_data, animal_name)
+
 
 if __name__ == "__main__":
     main()
